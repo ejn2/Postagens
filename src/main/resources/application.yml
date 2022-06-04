@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/javadb?useSSL=false
+    username: cell
+    password: 12345
+    driverClassName: com.mysql.jdbc.Driver
+  
+  jpa:
+    hibernate.ddl-auto: create-drop
+    generate-ddl: true
+    show-sql: true
+    
+    properties:
+      hibernate:
+        format_sql: true
