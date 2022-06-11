@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.app.postagem.dto.PostDTO;
 import com.app.postagem.dto.UserDTO;
 import com.app.postagem.exceptions.EmailIsAlreadyRegisteredException;
 import com.app.postagem.exceptions.UserNotFoundException;
@@ -110,9 +111,20 @@ public class UserServiceTest {
 			this.userService.findById(1L)
 				);
 		
-		
 	}
 	
+	// ========================== [Test | find all user posts ] ==========================
 	
+	@Test
+	void whenFindAllUserPostsIsCalled_ThenAListOfPostsIsReturned() throws UserNotFoundException {
+		when(this.userRepository.findById(Mockito.any(Long.class)))
+			.thenReturn(Optional.of(this.userModel));
+
+		List<PostDTO> listOfPosts = this.userService.findAllUserPosts(1L);
+		
+		assertEquals(this.userDTO.getPosts().get(0).getTitle(),
+			listOfPosts.get(0).getTitle()
+				);
+	}
 	
 }

@@ -9,10 +9,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.app.postagem.dto.PostDTO;
 import com.app.postagem.dto.UserDTO;
 import com.app.postagem.exceptions.EmailIsAlreadyRegisteredException;
 import com.app.postagem.exceptions.UserNotFoundException;
+import com.app.postagem.models.PostModel;
 import com.app.postagem.models.UserModel;
+import com.app.postagem.repository.PostRepository;
 import com.app.postagem.repository.UserRepository;
 
 @Service
@@ -20,6 +23,9 @@ public class UserService {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	PostRepository postRepository;
 	
 	ModelMapper modelMapper = new ModelMapper();
 	
@@ -64,6 +70,18 @@ public class UserService {
 		
 		return this.modelMapper.map(user, UserDTO.class);
 		
+	}
+	
+	// ========================== [ Find all posts ] ==========================
+	
+	public List<PostDTO> findAllUserPosts(Long id) throws UserNotFoundException {
+		
+		List<PostModel> userPosts = this.findById(id).getPosts();
+		
+		return userPosts.stream()
+			.map(post -> this.modelMapper.map(post, PostDTO.class))
+			.collect(Collectors.toList());
+				
 	}
 	
 }
