@@ -10,10 +10,7 @@ public abstract class UserUtils {
 
 	public static UserModel newUser() {
 		
-		PostModel post = new PostModel();
-		post.setId(1L);
-		post.setTitle("Post-1");
-		post.setDescription("Post Test");
+		PostModel post = PostUtils.newPostModel();
 		
 		UserModel user = new UserModel();
 		user.setId(1L);
