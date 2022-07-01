@@ -14,13 +14,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 import com.app.postagem.dto.PostDTO;
+import com.app.postagem.dto.SaveUserDTO;
 import com.app.postagem.dto.UserDTO;
 import com.app.postagem.exceptions.EmailIsAlreadyRegisteredException;
 import com.app.postagem.exceptions.UserNotFoundException;
+import com.app.postagem.models.PostModel;
 import com.app.postagem.models.UserModel;
+import com.app.postagem.repository.PostRepository;
 import com.app.postagem.repository.UserRepository;
+import com.app.postagem.utils.PostUtils;
 import com.app.postagem.utils.UserUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,11 +34,19 @@ public class UserServiceTest {
 	@Mock
 	UserRepository userRepository;
 	
+	@Mock
+	PostRepository postRepository;
+	
 	@InjectMocks
 	UserService userService;
 	
 	UserModel userModel = UserUtils.newUser();
 	UserDTO userDTO = UserUtils.newDTO();
+	SaveUserDTO saveDTO = UserUtils.newSaveDTO();
+	PostModel postModel = PostUtils.newPostModel();
+	PostDTO postDTO = PostUtils.newPostDTO();
+	
+	ModelMapper modelMapper = new ModelMapper();
 	
 	// ========================== [Test | Save ] ==========================
 	
@@ -46,7 +59,7 @@ public class UserServiceTest {
 		when(this.userRepository.save(Mockito.any(UserModel.class)))
 			.thenReturn(this.userModel);
 		
-		UserDTO createdUser = this.userService.saveUser(userDTO); 
+		UserDTO createdUser = this.userService.saveUser(this.saveDTO);
 		
 		assertEquals(this.userDTO.getName(), createdUser.getName());
 		assertEquals(this.userDTO.getEmail(), createdUser.getEmail());
@@ -60,7 +73,7 @@ public class UserServiceTest {
 			.thenReturn(userModel);
 	
 		assertThrows(EmailIsAlreadyRegisteredException.class, () -> 
-				this.userService.saveUser(userDTO)
+				this.userService.saveUser(this.saveDTO)
 			);
 		
 	}
@@ -80,10 +93,6 @@ public class UserServiceTest {
 		
 		assertEquals(modelList.get(0).getName(),
 				dtoList.get(0).getName());
-		
-		assertEquals(modelList.get(0).getEmail(),
-					dtoList.get(0).getEmail()
-				);
 	}
 	
 	// ========================== [Test | find by id ] ==========================
@@ -97,7 +106,6 @@ public class UserServiceTest {
 		UserDTO foundUser = this.userService.findById(this.userDTO.getId());
 		
 		assertEquals(this.userDTO.getName(), foundUser.getName());
-		assertEquals(this.userDTO.getEmail(), foundUser.getEmail());
 		
 	}
 	
@@ -111,20 +119,6 @@ public class UserServiceTest {
 			this.userService.findById(1L)
 				);
 		
-	}
-	
-	// ========================== [Test | find all user posts ] ==========================
-	
-	@Test
-	void whenFindAllUserPostsIsCalled_ThenAListOfPostsIsReturned() throws UserNotFoundException {
-		when(this.userRepository.findById(Mockito.any(Long.class)))
-			.thenReturn(Optional.of(this.userModel));
-
-		List<PostDTO> listOfPosts = this.userService.findAllUserPosts(1L);
-		
-		assertEquals(this.userDTO.getPosts().get(0).getTitle(),
-			listOfPosts.get(0).getTitle()
-				);
 	}
 	
 }

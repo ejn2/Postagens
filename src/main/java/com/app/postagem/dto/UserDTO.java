@@ -7,15 +7,15 @@ import com.app.postagem.models.PostModel;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class UserDTO {
 	
 	private Long id;
 	private String name;
 	private String lastname;
 	private String email;
-	private String password;
 	private List<PostModel> posts = new ArrayList<>();
 	
 }

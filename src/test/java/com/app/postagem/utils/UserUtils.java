@@ -2,6 +2,7 @@ package com.app.postagem.utils;
 
 import org.modelmapper.ModelMapper;
 
+import com.app.postagem.dto.SaveUserDTO;
 import com.app.postagem.dto.UserDTO;
 import com.app.postagem.models.PostModel;
 import com.app.postagem.models.UserModel;
@@ -28,5 +29,16 @@ public abstract class UserUtils {
 		
 		return modelMapper.map(UserUtils.newUser(), UserDTO.class);
 		
+	}
+	
+	public static SaveUserDTO newSaveDTO() {
+		
+		SaveUserDTO user = new SaveUserDTO();
+		user.setName("User");
+		user.setLastname("user");
+		user.setEmail("user@user.com");
+		user.setPassword("12345678");
+		
+		return user;
 	}
 }

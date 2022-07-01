@@ -3,6 +3,7 @@ package com.app.postagem.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,9 +11,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,9 +35,8 @@ public class UserModel {
 	@Column(nullable = false, length = 60)
 	private String password;
 	
-	@OneToMany
-	@JoinColumn(name = "user_id")
-	@OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name="user")
 	private List<PostModel> posts = new ArrayList<>();
 	
 }

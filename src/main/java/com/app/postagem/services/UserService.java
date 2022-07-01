@@ -9,11 +9,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.app.postagem.dto.PostDTO;
+import com.app.postagem.dto.SaveUserDTO;
 import com.app.postagem.dto.UserDTO;
 import com.app.postagem.exceptions.EmailIsAlreadyRegisteredException;
 import com.app.postagem.exceptions.UserNotFoundException;
-import com.app.postagem.models.PostModel;
 import com.app.postagem.models.UserModel;
 import com.app.postagem.repository.PostRepository;
 import com.app.postagem.repository.UserRepository;
@@ -29,6 +28,7 @@ public class UserService {
 	
 	ModelMapper modelMapper = new ModelMapper();
 	
+	
 	private void verifyIfEmailIsAlreadyRegistered(String email) throws EmailIsAlreadyRegisteredException {
 		
 		if(this.userRepository.findByEmail(email) != null) {
@@ -40,11 +40,11 @@ public class UserService {
 	// ========================== [ Save ] ==========================
 	
 	@Transactional
-	public UserDTO saveUser(UserDTO userDTO) throws EmailIsAlreadyRegisteredException {
-		this.verifyIfEmailIsAlreadyRegistered(userDTO.getEmail());
+	public UserDTO saveUser(SaveUserDTO saveUserDTO) throws EmailIsAlreadyRegisteredException {
+		this.verifyIfEmailIsAlreadyRegistered(saveUserDTO.getEmail());
 		
 		UserModel user = this.userRepository.save(
-				this.modelMapper.map(userDTO, UserModel.class)
+				this.modelMapper.map(saveUserDTO, UserModel.class)
 				);
 		
 		return this.modelMapper.map(user, UserDTO.class);
@@ -66,22 +66,9 @@ public class UserService {
 	
 	public UserDTO findById(Long id) throws UserNotFoundException {
 		UserModel user = this.userRepository.findById(id)
-				.orElseThrow(() -> new UserNotFoundException("User not Found with id '"+ id+"'"));
+				.orElseThrow(() -> new UserNotFoundException("User not Found"));
 		
 		return this.modelMapper.map(user, UserDTO.class);
 		
 	}
-	
-	// ========================== [ Find all posts ] ==========================
-	
-	public List<PostDTO> findAllUserPosts(Long id) throws UserNotFoundException {
-		
-		List<PostModel> userPosts = this.findById(id).getPosts();
-		
-		return userPosts.stream()
-			.map(post -> this.modelMapper.map(post, PostDTO.class))
-			.collect(Collectors.toList());
-				
-	}
-	
 }
